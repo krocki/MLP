@@ -60,74 +60,74 @@ classdef Network < handle
 				end
 
 			end
-        end
-        
-		function obj = update(obj, alpha)
+		end
 
-			for i=1:1:length(obj.layers)
+			function obj = update(obj, alpha)
 
-				obj.layers{i}.apply_grads(alpha);
+				for i=1:1:length(obj.layers)
+
+					obj.layers{i}.apply_grads(alpha);
+
+				end
+
+		end
+
+		function obj = train(obj, train_images, train_labels, learning_rate, iterations)
+
+			num_examples = size(train_images, 1);
+
+			for ii=1:1:iterations
+
+				random_numbers = randi([1 num_examples], 1, obj.batchsize);
+
+				batch = train_images(random_numbers, :);
+				targets = train_labels(random_numbers, :);
+
+				% forward activations
+				obj.forward(batch);
+
+				I = eye(10);
+
+					targets_onehot = I(:, targets+1);
+
+				obj.loss = cross_entropy(obj.layers{end}.y, targets_onehot);
+				%fprintf('[ \t %d / %d\t ] Loss = %f\n', ii, iterations, loss);
+
+					% % backprogagation
+					obj.backward(targets);
+
+					% % apply changes
+					obj.update(learning_rate);
 
 			end
 
-        end
-        
-        function obj = train(obj, train_images, train_labels, learning_rate, iterations)
-        
-        	num_examples = size(train_images, 1);
-        	
-        	for ii=1:1:iterations
+		end
 
-	         	random_numbers = randi([1 num_examples], 1, obj.batchsize);
+		function obj = test(obj, test_images, test_labels)
 
-	        	batch = train_images(random_numbers, :);
-	         	targets = train_labels(random_numbers, :);
+			loss = 0;
+			num_correct = 0;
+			num_cases = size(test_images, 1);
 
-	         	% forward activations
-	         	obj.forward(batch);
+			for ii=1:1:num_cases/obj.batchsize
 
-	         	I = eye(10);
+				numbers = [(ii-1)*obj.batchsize+1:1:ii*obj.batchsize];
 
-				targets_onehot = I(:, targets+1);
+				batch = test_images(numbers, :);
+				targets = test_labels(numbers, :);
 
-	         	obj.loss = cross_entropy(obj.layers{end}.y, targets_onehot);
-	         	%fprintf('[ \t %d / %d\t ] Loss = %f\n', ii, iterations, loss);
+				% forward activations
+				obj.forward(batch);
 
-				% % backprogagation
-				obj.backward(targets);
+				[output idx] = max(obj.layers{end}.y, [], 1);
 
-				% % apply changes
-				obj.update(learning_rate);
+				num_correct = num_correct + sum(targets+1 == idx');
 
-        	end
+			end
 
-        end
-        
-        function obj = test(obj, test_images, test_labels)
+			fprintf('%% correct = %.2f\n', 100.0 * num_correct/num_cases);
 
-        	loss = 0;
-        	num_correct = 0;
-        	num_cases = size(test_images, 1);
-
-        	for ii=1:1:num_cases/obj.batchsize
-
-	         	numbers = [(ii-1)*obj.batchsize+1:1:ii*obj.batchsize];
-
-	        	batch = test_images(numbers, :);
-	         	targets = test_labels(numbers, :);
-
-	         	% forward activations
-	         	obj.forward(batch);
-
-	         	[output idx] = max(obj.layers{end}.y, [], 1);
-
-	         	num_correct = num_correct + sum(targets+1 == idx');
-
-        	end
-
-        	fprintf('%% correct = %.2f\n', 100.0 * num_correct/num_cases);
-
-        end
+		end
 
 	end
 
