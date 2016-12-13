@@ -3,7 +3,8 @@ A simple implementation of a MLP in MATLAB (~98% accuracy on MNIST)
 
 Download 4 MNIST files from http://yann.lecun.com/exdb/mnist/
 
-and run:
+unpack them, put in the same folder (or in 'data') and run:
+
 ```
 nntest
 ```
