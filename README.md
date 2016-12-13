@@ -1,7 +1,9 @@
 # MLP
 A simple implementation of a MLP in MATLAB (~98% accuracy on MNIST)
 
-how to run:
+Download 4 MNIST files from http://yann.lecun.com/exdb/mnist/
+
+and run:
 ```
 nntest
 ```
