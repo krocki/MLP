@@ -8,6 +8,7 @@ load_data;
 epochs = 1000;
 batchsize = 250;
 learning_rate = 1e-3;
+iters_per_epoch = 1000;
 
 nn = Network(batchsize);
 
@@ -23,19 +24,22 @@ for e=1:1:epochs
 
     fprintf('Epoch %d...\n', e);
     
-    nn.train(train_images, train_labels, learning_rate, size(train_images, 1)/batchsize);
-    
-    mean(nn.loss)
+    for ii=1:1:iters_per_epoch
 
-    smooth_loss = [smooth_loss smooth_loss(end) * 0.99 + 0.01 * nn.loss/batchsize];
+    	nn.train(train_images, train_labels, learning_rate);
+    	smooth_loss = [smooth_loss smooth_loss(end) * 0.99 + 0.01 * nn.loss/batchsize];
     
+    end
+
+    nn.test(test_images, test_labels);
+
     figure(1);
     plot(smooth_loss);
     drawnow
 
 end
 
-nn.test(test_images, test_labels);
+
 
 
 
