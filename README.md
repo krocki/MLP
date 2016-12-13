@@ -1,5 +1,5 @@
 # MLP
-A simple implementation of a MLP in MATLAB (~98% accuracy on MNIST)
+A simple implementation of a Multilayer Perceptron in MATLAB (~98% accuracy on MNIST)
 
 Download 4 MNIST files from http://yann.lecun.com/exdb/mnist/
 
